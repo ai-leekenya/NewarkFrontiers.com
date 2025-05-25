@@ -1,0 +1,410 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEWARK FRONTIERS - Financing Your Dreams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1F2937;
+            color: #E5E7EB;
+        }
+        .golden-gradient {
+            background: linear-gradient(to right, #D4AF37, #FBBF24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .chat-bubble {
+            background-color: #374151;
+            border-radius: 1.25rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 1.5rem;
+            border-width: 0.5rem;
+            border-style: solid;
+            border-color: #374151 transparent transparent transparent;
+        }
+        .weather-loading::after {
+            content: ' ⛅';
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .social-icon {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .social-icon:hover {
+            transform: scale(1.2);
+            color: #D4AF37;
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        #menu {
+            transition: transform 0.3s ease-in-out;
+        }
+        #menu.hidden {
+            transform: translateX(-100%);
+        }
+        @media (min-width: 640px) {
+            #menu.hidden {
+                transform: translateY(-100%);
+            }
+        }
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-gray-900 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-12">
+                <div class="flex items-center">
+                    <button id="menu-toggle" class="text-white focus:outline-none" aria-label="Toggle menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="menu" class="hidden bg-gray-800 absolute top-12 left-0 w-64 sm:w-full sm:top-12 sm:left-0 sm:h-auto sm:shadow-md">
+            <div class="flex flex-col sm:flex-row sm:justify-center sm:space-x-6 p-3">
+                <a href="#home" class="text-gray-200 hover:text-blue-400 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">Home</a>
+                <a href="#contact" class="text-gray-200 hover:text-blue-400 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">Apply Now</a>
+                <a href="#dashboard" class="text-gray-200 hover:text-blue-400 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
+                <a href="#calculator" class="text-gray-200 hover:text-blue-400 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">Loan Calculator</a>
+                <a href="#support" class="text-gray-200 hover:text-blue-400 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200">Support</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight golden-gradient">NEWARK FRONTIERS</h1>
+            <p class="mt-2 text-lg italic text-gray-300">Financing Your Dreams</p>
+            <p class="mt-4 text-lg max-w-2xl mx-auto">Kenya's top microfinance institution supporting business growth with loans disbursed in 24 hours.</p>
+            <a href="#contact" class="mt-4 inline-block bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-500 transition-all duration-200">Contact Us</a>
+            <p class="mt-4 text-sm weather-loading">Loading weather...</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-12 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Contact Us to Apply</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Reach out to our team for loan applications and support.</p>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-phone-alt text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Call</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Connect with our team directly.</p>
+                    <a href="tel:+254103806225" class="mt-3 inline-block text-blue-400 hover:text-blue-300 font-medium text-sm">0103806225</a>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fab fa-whatsapp text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">WhatsApp</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Chat with us instantly.</p>
+                    <a href="https://wa.me/+254103806225" class="mt-3 inline-block text-blue-400 hover:text-blue-300 font-medium text-sm">Message Us</a>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-sms text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">SMS</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Send us a quick message.</p>
+                    <a href="sms:+254103806225" class="mt-3 inline-block text-blue-400 hover:text-blue-300 font-medium text-sm">Send SMS</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loan Calculator Section -->
+    <section id="calculator" class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Loan Calculator</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Estimate your monthly payments with our interactive tool.</p>
+            <div class="mt-8 bg-gray-700 p-6 rounded-lg shadow-md">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-200">Loan Amount (KES)</label>
+                        <input type="number" id="loan-amount" min="1000" max="1000000" class="mt-1 block w-full border-gray-600 bg-gray-800 text-white rounded-lg shadow-sm focus:ring-blue-600 focus:border-blue-600 py-2 px-3" placeholder="Enter amount">
+                        <p class="mt-1 text-xs text-gray-400">Please enter a valid amount between 1,000 and 1,000,000 KES.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-200">Loan Term (Months)</label>
+                        <input type="number" id="loan-term" min="1" max="60" class="mt-1 block w-full border-gray-600 bg-gray-800 text-white rounded-lg shadow-sm focus:ring-blue-600 focus:border-blue-600 py-2 px-3" placeholder="Enter term">
+                        <p class="mt-1 text-xs text-gray-400">Please enter a valid term between 1 and 60 months.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-200">Interest Rate (%)</label>
+                        <input type="number" id="interest-rate" min="1" max="30" class="mt-1 block w-full border-gray-600 bg-gray-800 text-white rounded-lg shadow-sm focus:ring-blue-600 focus:border-blue-600 py-2 px-3" placeholder="Enter rate">
+                        <p class="mt-1 text-xs text-gray-400">Please enter a valid rate between 1 and 30%.</p>
+                    </div>
+                </div>
+                <p id="error-message" class="mt-3 text-xs text-red-400 hidden"></p>
+                <p class="mt-4 text-base font-medium text-white">Estimated Monthly Payment: <span id="monthly-payment">KES 0</span></p>
+                <div class="mt-4 flex space-x-3">
+                    <button id="calculate-btn" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition-all duration-200">Calculate</button>
+                    <button id="reset-btn" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition-all duration-200">Reset</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Options Section -->
+    <section class="py-12 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Payment Options</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Choose flexible repayment schedules with trusted Kenyan methods.</p>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-4 gap-6">
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-mobile-alt text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Mpesa</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Pay directly from your Mpesa account.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-wallet text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Airtel Money</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Use Airtel Money for quick payments.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-credit-card text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Credit Card</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Secure payments with your card.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md text-center card-hover">
+                    <i class="fas fa-digital-tachograph text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Digital Wallet</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Coming soon: Integrate with Mpesa/Airtel Money.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Subscribe to Our Newsletter</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Receive weekly updates on news, offers, and tips.</p>
+            <div class="mt-6 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-3">
+                <input type="email" class="block w-full sm:w-1/2 md:w-1/3 border-gray-600 bg-gray-800 text-white rounded-lg shadow-sm focus:ring-blue-600 focus:border-blue-600 py-2 px-3" placeholder="Enter your email">
+                <button class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition-all duration-200">Subscribe</button>
+            </div>
+            <p class="mt-3 text-green-400 hidden text-center text-sm">Subscribed successfully!</p>
+        </div>
+    </section>
+
+    <!-- Job Vacancies Section -->
+    <section class="py-12 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Job Vacancies</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Explore career opportunities at NEWARK FRONTIERS. Contact HR at <a href="tel:+254736638456" class="text-blue-400 hover:text-blue-300">+254736638456</a> for applications.</p>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Tips for a Successful Loan Application</h2>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md card-hover">
+                    <i class="fas fa-file-alt text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Prepare Documents</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Ensure your ID, business license, and financial statements are ready.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md card-hover">
+                    <i class="fas fa-check-circle text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Check Your Credit</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Review your credit score and address any issues beforehand.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-lg shadow-md card-hover">
+                    <i class="fas fa-info-circle text-4xl text-blue-600 mb-3"></i>
+                    <h3 class="text-lg font-medium text-white">Be Transparent</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Provide accurate details about your business and finances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-12 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Frequently Asked Questions</h2>
+            <div class="mt-8 space-y-6">
+                <div class="bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h3 class="text-lg font-medium text-white">What documents do I need to apply for a loan?</h3>
+                    <p class="mt-2 text-gray-200 text-sm">You’ll need a valid ID, business license, and financial documents like bank statements or tax returns.</p>
+                </div>
+                <div class="bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h3 class="text-lg font-medium text-white">How long does the approval process take?</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Loans are disbursed within 24 hours upon approval.</p>
+                </div>
+                <div class="bg-gray-700 p-5 rounded-lg shadow-md">
+                    <h3 class="text-lg font-medium text-white">Can I pay early without penalties?</h3>
+                    <p class="mt-2 text-gray-200 text-sm">Yes, we allow early repayments with no penalties. Contact support for details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-semibold text-white text-center">Support</h2>
+            <p class="mt-3 text-base text-gray-200 text-center max-w-3xl mx-auto">Contact us for assistance. Office hours: Mon-Fri 9:00 AM-5:00 PM, Sat 9:00 AM-12:00 NOON.</p>
+            <div class="mt-6 text-center">
+                <p class="text-gray-200 text-sm">Customer Care: <a href="tel:+254103806225" class="text-blue-400 hover:text-blue-300">0103806225</a></p>
+                <p class="mt-2 text-gray-200 text-sm">HR/Interviews: <a href="tel:+254736638456" class="text-blue-400 hover:text-blue-300">+254736638456</a></p>
+                <p class="mt-2 text-gray-200 text-sm"><a href="https://wa.me/+254103806225" class="text-blue-400 hover:text-blue-300">Live Chat via WhatsApp</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Section -->
+    <section class="py-12 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="chat-bubble">
+                <p class="text-gray-200 text-base">Welcome to NEWARK FRONTIERS! How can I assist you today?</p>
+            </div>
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                <input type="text" class="block w-full border-gray-600 bg-gray-800 text-white rounded-lg shadow-sm focus:ring-blue-600 focus:border-blue-600 py-2 px-3" placeholder="Type your message...">
+                <button class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition-all duration-200">Send</button>
+            </div>
+            <p class="mt-3 text-gray-200 text-center text-sm">Chat with Us</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-xl font-semibold text-white text-center">NEWARK FRONTIERS</h3>
+            <p class="mt-3 text-gray-200 text-center text-sm">NEWARK TOWERS, Karen end, Dagoretti Road, Nairobi, Kenya</p>
+            <div class="mt-4 flex space-x-6 justify-center">
+                <a href="fb://page/NewarkFrontiers" onclick="window.location.href='https://www.facebook.com/NewarkFrontiers'" class="social-icon text-white text-2xl"><i class="fab fa-facebook-f"></i></a>
+                <a href="twitter://user?screen_name=NewarkFontier" onclick="window.location.href='https://x.com/NewarkFontier'" class="social-icon text-white text-2xl"><i class="fab fa-x-twitter"></i></a>
+                <a href="instagram://user?username=newarkfrontiers_ke" onclick="window.location.href='https://www.instagram.com/newarkfrontiers_ke'" class="social-icon text-white text-2xl"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/company/Newark-Frontiers" class="social-icon text-white text-2xl"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p class="mt-4 text-gray-200 text-center text-sm">© 2025 NEWARK FRONTIERS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu');
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+        const menuLinks = menu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Loan Calculator
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const loanAmountInput = document.getElementById('loan-amount');
+        const loanTermInput = document.getElementById('loan-term');
+        const interestRateInput = document.getElementById('interest-rate');
+        const monthlyPaymentSpan = document.getElementById('monthly-payment');
+        const errorMessage = document.getElementById('error-message');
+
+        calculateBtn.addEventListener('click', () => {
+            const amount = parseFloat(loanAmountInput.value);
+            const term = parseInt(loanTermInput.value);
+            const rate = parseFloat(interestRateInput.value);
+
+            // Validation
+            errorMessage.classList.add('hidden');
+            if (!amount || amount < 1000 || amount > 1000000) {
+                errorMessage.textContent = 'Please enter a loan amount between 1,000 and 1,000,000 KES.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+            if (!term || term < 1 || term > 60) {
+                errorMessage.textContent = 'Please enter a loan term between 1 and 60 months.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+            if (!rate || rate < 1 || rate > 30) {
+                errorMessage.textContent = 'Please enter an interest rate between 1 and 30%.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            // Calculate monthly payment (Loan Amount + Total Interest) / Term
+            const totalInterest = amount * (rate / 100) * (term / 12);
+            const monthlyPayment = (amount + totalInterest) / term;
+            monthlyPaymentSpan.textContent = `KES ${monthlyPayment.toFixed(2)}`;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            loanAmountInput.value = '';
+            loanTermInput.value = '';
+            interestRateInput.value = '';
+            monthlyPaymentSpan.textContent = 'KES 0';
+            errorMessage.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
